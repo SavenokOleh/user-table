@@ -1,12 +1,13 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import PaginationTable from "../components/PaginationTable";
 import getUsers from "../store/actions/getUsers";
 import {useAppDispatch} from "../store";
-import {Container} from "@mui/material";
+import {Container, FormControl, NativeSelect} from "@mui/material";
 import {toast} from "react-toastify";
 
 const UsersTable: React.FunctionComponent = () => {
     const dispatch = useAppDispatch();
+    const [isSort, setSort] = useState<string>('none')
 
     useEffect(() => {
         toast.promise(dispatch(getUsers()), {
@@ -18,7 +19,23 @@ const UsersTable: React.FunctionComponent = () => {
 
     return(
         <Container maxWidth="lg">
-            <PaginationTable/>
+            <FormControl>
+                <NativeSelect
+                    variant="outlined"
+                    defaultValue='none'
+                    inputProps={{
+                        name: 'gender-sort',
+                        id: 'uncontrolled-native',
+                    }}
+                    onChange={(event) => setSort(event.target.value)}
+                >
+                    <option value={'none'}>none</option>
+                    <option value={'male'}>male</option>
+                    <option value={'female'}>female</option>
+                </NativeSelect>
+            </FormControl>
+            <br/>
+            <PaginationTable sort={isSort}/>
         </Container>
     );
 }

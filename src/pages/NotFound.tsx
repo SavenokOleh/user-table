@@ -1,8 +1,8 @@
 import React from "react";
 
-const NotFound: React.FunctionComponent = (props) => {
+const NotFound: React.FunctionComponent = () => {
     return(
-        <h1>Privet iz table</h1>
+        <h1>Page not found</h1>
     );
 }
 

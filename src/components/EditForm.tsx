@@ -1,36 +1,25 @@
 import React from 'react';
 import {Button, FormControl, TextField, NativeSelect, Container} from "@mui/material";
-import {User} from "../requests/getAllUsers";
-import {useAppDispatch} from "../store";
+import {RootState, useAppDispatch} from "../store";
 import updateUser from "../store/actions/updateUser";
 import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
+import {useSelector} from "react-redux";
+import {cleanCurrentUser, updateEmail, updateGender, updateName, updateStatus} from "../store/reducers/userReducer";
 
-interface EditFormI {
-        user: {
-            isUser: User,
-            setUser: React.Dispatch<React.SetStateAction<User | null>>
-        }
-}
-
-const EditForm: React.FunctionComponent<EditFormI> = (props) => {
-    const {isUser, setUser} = props.user;
+const EditForm: React.FunctionComponent = () => {
+    const currentUserData = useSelector((state: RootState) => state.userReducer.currentUser);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-
-    const onUserDataChange = (event: { target: { value: string; }; }, field: string) => {
-        setUser((state: any) => {
-            return {...state, [field]: `${event.target.value}`}
-        });
-    }
-
+    
     const onSave = () => {
-        toast.promise(dispatch(updateUser(isUser)), {
+        currentUserData && toast.promise(dispatch(updateUser(currentUserData)), {
             pending : "Trying to update user data",
             success: "User successfully updated",
             error: "Something goes wrong with user updating"
         })
-            .then(() => navigate('/users'))
+            .then(() => navigate('/users'));
+        dispatch(cleanCurrentUser());
     }
 
     return (
@@ -39,46 +28,47 @@ const EditForm: React.FunctionComponent<EditFormI> = (props) => {
                 <TextField
                     margin="normal"
                     type="text"
-                    label="Name"
                     variant="outlined"
-                    value={isUser.name}
-                    onChange={(e) => onUserDataChange(e, 'name')}
+                    value={currentUserData && currentUserData.name}
+                    onChange={(event) => dispatch(updateName(event.target.value))}
                 />
 
                 <TextField
                     margin="normal"
                     type="email"
-                    label="Email"
                     variant="outlined"
-                    value={isUser.email}
-                    onChange={(e) => onUserDataChange(e, 'email')}
+                    value={currentUserData && currentUserData.email}
+                    onChange={(event) => dispatch(updateEmail(event.target.value))}
                 />
-
-                <NativeSelect
-                    variant="outlined"
-                    defaultValue={isUser.gender}
-                    inputProps={{
-                        name: 'gender',
-                        id: 'uncontrolled-native',
-                    }}
-                    onChange={(e) => onUserDataChange(e, 'gender')}
-                >
-                    <option value={'male'}>male</option>
-                    <option value={'female'}>female</option>
-                </NativeSelect>
+                <FormControl>
+                    <NativeSelect
+                        variant="outlined"
+                        defaultValue={currentUserData && currentUserData.gender}
+                        inputProps={{
+                            name: 'gender',
+                            id: 'uncontrolled-native',
+                        }}
+                        onChange={(event) => dispatch(updateGender(event.target.value))}
+                    >
+                        <option value={'male'}>male</option>
+                        <option value={'female'}>female</option>
+                    </NativeSelect>
+                </FormControl>
                 <br/>
-                <NativeSelect
-                    variant="outlined"
-                    defaultValue={isUser.status}
-                    inputProps={{
-                        name: 'status',
-                        id: 'uncontrolled-native',
-                    }}
-                    onChange={(e) => onUserDataChange(e, 'status')}
-                >
-                    <option value={'active'}>active</option>
-                    <option value={'inactive'}>inactive</option>
-                </NativeSelect>
+                <FormControl>
+                    <NativeSelect
+                        variant="outlined"
+                        defaultValue={currentUserData && currentUserData.status}
+                        inputProps={{
+                            name: 'status',
+                            id: 'uncontrolled-native',
+                        }}
+                        onChange={(event) => dispatch(updateStatus(event.target.value))}
+                    >
+                        <option value={'active'}>active</option>
+                        <option value={'inactive'}>inactive</option>
+                    </NativeSelect>
+                </FormControl>
                 <br/>
                 <Button
                     variant="contained"

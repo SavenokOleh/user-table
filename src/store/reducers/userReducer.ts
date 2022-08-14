@@ -21,7 +21,23 @@ const initialState: UserI = {
 const userReducer = createSlice({
     name: 'users',
     initialState,
-    reducers: {},
+    reducers: {
+        updateName: function (state, action) {
+            state.currentUser !== null && (state.currentUser.name = action.payload);
+        },
+        updateEmail: function (state, action) {
+            state.currentUser !== null && (state.currentUser.email = action.payload);
+        },
+        updateStatus: function (state, action) {
+            state.currentUser !== null && (state.currentUser.status = action.payload);
+        },
+        updateGender: function (state, action) {
+            state.currentUser !== null && (state.currentUser.gender = action.payload);
+        },
+        cleanCurrentUser: function (state) {
+            state.currentUser = null;
+        }
+    },
     extraReducers: {
         [getUsers.pending.type]: (state) => {
             state.isLoading = true;
@@ -50,5 +66,7 @@ const userReducer = createSlice({
         }
     }
 })
+
+export const { updateName, updateStatus, updateGender, updateEmail, cleanCurrentUser } = userReducer.actions
 
 export default userReducer.reducer;
