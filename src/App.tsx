@@ -1,8 +1,13 @@
 import React from 'react';
+import {Route, Routes} from "react-router-dom";
+import UsersTable from "./pages/UsersTable";
 
 function App() {
   return (
-   <h1>Privet</h1>
+  <Routes>
+    <Route path="/users" element={<UsersTable/>}>
+    </Route>
+  </Routes>
   );
 }
 
