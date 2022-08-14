@@ -115,7 +115,10 @@ export default function PaginationTable() {
                             ? users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             : users
                     ).map((user) => (
-                        <TableRow key={user.id} onClick={() => navigator(`./${user.id}`)}>
+                        <TableRow
+                            key={user.id}
+                            onClick={() => navigator(`./${user.id}/edit`)}
+                        >
                             <TableCell component="th" scope="row">
                                 {user.name}
                             </TableCell>

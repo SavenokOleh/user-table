@@ -1,14 +1,18 @@
 import {createSlice } from '@reduxjs/toolkit';
-import {User} from "../../requests/getallUsers";
+import {User} from "../../requests/getAllUsers";
 import getUsers from "../actions/getUsers";
+import getUser from "../actions/getUser";
+import updateUser from "../actions/updateUser";
 
 interface UserI {
+    currentUser: User | null,
     users: Array<User> | null,
     isLoading: Boolean,
     error: null | String;
 }
 
 const initialState: UserI = {
+    currentUser: null,
     users: null,
     isLoading:false,
     error: null
@@ -20,7 +24,6 @@ const userReducer = createSlice({
     reducers: {},
     extraReducers: {
         [getUsers.pending.type]: (state) => {
-            console.log(state);
             state.isLoading = true;
         },
         [getUsers.fulfilled.type]: (state, action) => {
@@ -30,6 +33,20 @@ const userReducer = createSlice({
         [getUsers.rejected.type]: (state, action) => {
             state.error = action.error;
             state.isLoading = false;
+        },
+        [getUser.pending.type]: (state) => {
+            state.isLoading = true;
+        },
+        [getUser.fulfilled.type]: (state, action) => {
+            state.currentUser = action.payload;
+            state.isLoading = false;
+        },
+        [getUser.rejected.type]: (state, action) => {
+            state.error = action.error;
+            state.isLoading = false;
+        },
+        [updateUser.rejected.type]: (state, action) => {
+            state.error = action.error;
         }
     }
 })
